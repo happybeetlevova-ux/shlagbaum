@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Шлагбаум</string>
+    <string name="widget_desc">Три кнопки в ряд для открытия шлагбаумов звонком</string>
+    <string name="widget_desc_col">Три кнопки столбиком для открытия шлагбаумов звонком</string>
+</resources>
