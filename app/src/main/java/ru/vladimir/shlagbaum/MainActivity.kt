@@ -29,8 +29,10 @@ class MainActivity : Activity() {
 
     private val GREEN = 0xFF2E7D32.toInt()
 
-    private val colorViews = Array(Prefs.COUNT) { mutableListOf<View>() }
-    private val iconViews = Array(Prefs.COUNT) { mutableListOf<View>() }
+    private val colorViews = Array(Prefs.MAX) { mutableListOf<View>() }
+    private val iconViews = Array(Prefs.MAX) { mutableListOf<View>() }
+    private val blocks = mutableListOf<View>()
+    private val countViews = mutableListOf<TextView>()
 
     private fun dp(v: Int) = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, v.toFloat(), resources.displayMetrics).toInt()
@@ -43,6 +45,7 @@ class MainActivity : Activity() {
             setPadding(dp(20), dp(12), dp(20), dp(24))
         }
         root.addView(appIconBlock())
+        root.addView(countBlock())
 
         // Режим отображения
         root.addView(header("Что показывать на кнопках"))
@@ -57,7 +60,8 @@ class MainActivity : Activity() {
         root.addView(modes)
         root.addView(hint("Если у кнопки не выбран значок, на ней будет название."))
 
-        for (i in 0 until Prefs.COUNT) root.addView(buttonBlock(i))
+        for (i in 0 until Prefs.MAX) root.addView(buttonBlock(i).also { blocks += it })
+        showBlocks()
 
         root.addView(Button(this).apply {
             text = "Добавить виджет: в ряд"
@@ -181,8 +185,49 @@ class MainActivity : Activity() {
     }
 
     private fun changed() {
-        for (i in 0 until Prefs.COUNT) markIcons(i)
+        for (i in 0 until Prefs.MAX) markIcons(i)
         BarrierWidget.refreshAll(this)
+    }
+
+    /** Выбор количества кнопок: ряд «1 2 3 4 5 6». */
+    private fun countBlock(): View {
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        box.addView(header("Количество кнопок"), LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            .apply { topMargin = dp(16) })
+        val row = LinearLayout(this)
+        for (n in 1..Prefs.MAX) {
+            val tv = TextView(this).apply {
+                text = n.toString(); textSize = 18f; gravity = Gravity.CENTER
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setOnClickListener {
+                    Prefs.setCount(this@MainActivity, n); markCount(); showBlocks(); changed()
+                }
+            }
+            countViews += tv
+            row.addView(tv, LinearLayout.LayoutParams(0, dp(46), 1f).apply { rightMargin = dp(6) })
+        }
+        box.addView(row)
+        box.addView(hint("Для 4–6 кнопок виджет удобнее растянуть: зажмите его и потяните за край."))
+        markCount()
+        return box
+    }
+
+    private fun markCount() {
+        val sel = Prefs.count(this)
+        countViews.forEachIndexed { k, tv ->
+            val on = k + 1 == sel
+            tv.setTextColor(if (on) Color.WHITE else 0xFF424242.toInt())
+            tv.background = GradientDrawable().apply {
+                cornerRadius = dp(10).toFloat()
+                if (on) setColor(GREEN) else { setColor(Color.TRANSPARENT); setStroke(dp(1), 0xFFBDBDBD.toInt()) }
+            }
+        }
+    }
+
+    /** Показать настройки только для включённых кнопок. */
+    private fun showBlocks() {
+        val n = Prefs.count(this)
+        blocks.forEachIndexed { i, b -> b.visibility = if (i < n) View.VISIBLE else View.GONE }
     }
 
     /** Выбор значка приложения: включаем один ярлык и выключаем другой. */

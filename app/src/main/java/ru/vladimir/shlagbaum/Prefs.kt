@@ -2,9 +2,10 @@ package ru.vladimir.shlagbaum
 
 import android.content.Context
 
-/** Настройки трёх кнопок: название, номер, цвет, значок + режим отображения. */
+/** Настройки кнопок (до 6): название, номер, цвет, значок + количество и режим отображения. */
 object Prefs {
-    const val COUNT = 3
+    /** Сколько кнопок можно включить максимум. */
+    const val MAX = 6
     private const val FILE = "barriers"
 
     /** Палитра цветов кнопок. */
@@ -47,10 +48,13 @@ object Prefs {
     fun color(ctx: Context, i: Int): Int = sp(ctx).getInt("color_$i", i % COLORS.size)
     fun icon(ctx: Context, i: Int): Int = sp(ctx).getInt("icon_$i", 0)
     fun mode(ctx: Context): Int = sp(ctx).getInt("mode", MODE_TEXT)
+    /** Сколько кнопок показывать на виджете (1–6, по умолчанию 3). */
+    fun count(ctx: Context): Int = sp(ctx).getInt("count", 3).coerceIn(1, MAX)
 
     fun setName(ctx: Context, i: Int, v: String) = sp(ctx).edit().putString("name_$i", v).apply()
     fun setPhone(ctx: Context, i: Int, v: String) = sp(ctx).edit().putString("phone_$i", v).apply()
     fun setColor(ctx: Context, i: Int, v: Int) = sp(ctx).edit().putInt("color_$i", v).apply()
     fun setIcon(ctx: Context, i: Int, v: Int) = sp(ctx).edit().putInt("icon_$i", v).apply()
     fun setMode(ctx: Context, v: Int) = sp(ctx).edit().putInt("mode", v).apply()
+    fun setCount(ctx: Context, v: Int) = sp(ctx).edit().putInt("count", v.coerceIn(1, MAX)).apply()
 }

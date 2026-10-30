@@ -14,7 +14,7 @@ class CallActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val i = intent.getIntExtra(EXTRA_INDEX, -1)
-        val phone = if (i in 0 until Prefs.COUNT) Prefs.phone(this, i) else ""
+        val phone = if (i in 0 until Prefs.MAX) Prefs.phone(this, i) else ""
 
         when {
             phone.isBlank() -> {
