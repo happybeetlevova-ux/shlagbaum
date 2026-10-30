@@ -11,8 +11,8 @@ android {
         applicationId = "ru.vladimir.shlagbaum"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
     }
     // Постоянный закрытый ключ подписи: благодаря ему новые версии ставятся поверх старых
     signingConfigs {
