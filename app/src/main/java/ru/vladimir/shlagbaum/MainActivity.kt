@@ -28,6 +28,7 @@ import android.widget.*
 class MainActivity : Activity() {
 
     private val GREEN = 0xFF2E7D32.toInt()
+    private val REQ_SIM = 2
 
     private val colorViews = Array(Prefs.MAX) { mutableListOf<View>() }
     private val iconViews = Array(Prefs.MAX) { mutableListOf<View>() }
@@ -119,6 +120,9 @@ class MainActivity : Activity() {
             addTextChangedListener(watcher { Prefs.setPhone(this@MainActivity, i, it.trim()) })
         })
 
+        box.addView(label("Звонить с SIM-карты"))
+        box.addView(simChooser(i))
+
         box.addView(label("Цвет"))
         val colors = LinearLayout(this)
         Prefs.COLORS.forEachIndexed { c, col ->
@@ -187,6 +191,48 @@ class MainActivity : Activity() {
     private fun changed() {
         for (i in 0 until Prefs.MAX) markIcons(i)
         BarrierWidget.refreshAll(this)
+    }
+
+    /** Выбор SIM-карты для кнопки. */
+    private fun simChooser(i: Int): View {
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val saved = Prefs.sim(this, i)
+        val cards = Sim.cards(this)
+
+        val options = mutableListOf(-1 to "Как в телефоне")
+        cards.forEach { options += it.slot to it.label }
+        if (saved >= 0 && cards.none { it.slot == saved }) options += saved to "SIM ${saved + 1} — сейчас не найдена"
+
+        val group = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
+        options.forEach { (value, text) ->
+            group.addView(RadioButton(this).apply {
+                id = 3000 + i * 10 + value + 1
+                this.text = text; textSize = 15f
+                isChecked = value == saved
+            })
+        }
+        group.setOnCheckedChangeListener { _, id -> Prefs.setSim(this, i, (id - 3000) % 10 - 1) }
+        box.addView(group)
+
+        when {
+            !Sim.hasPermission(this) -> box.addView(TextView(this).apply {
+                text = "Разрешить выбор SIM-карты"
+                textSize = 15f; setTextColor(GREEN)
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setPadding(0, dp(6), 0, dp(6))
+                setOnClickListener {
+                    requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE), REQ_SIM)
+                }
+            })
+            cards.size <= 1 -> box.addView(hint("В телефоне одна SIM-карта — выбирать не нужно."))
+        }
+        return box
+    }
+
+    override fun onRequestPermissionsResult(code: Int, perms: Array<out String>, res: IntArray) {
+        super.onRequestPermissionsResult(code, perms, res)
+        // После разрешения перестраиваем экран, чтобы появились SIM-карты
+        if (code == REQ_SIM && res.firstOrNull() == PackageManager.PERMISSION_GRANTED) recreate()
     }
 
     /** Выбор количества кнопок: ряд «1 2 3 4 5 6». */

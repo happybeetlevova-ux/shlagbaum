@@ -47,6 +47,10 @@ object Prefs {
     fun phone(ctx: Context, i: Int): String = sp(ctx).getString("phone_$i", "") ?: ""
     fun color(ctx: Context, i: Int): Int = sp(ctx).getInt("color_$i", i % COLORS.size)
     fun icon(ctx: Context, i: Int): Int = sp(ctx).getInt("icon_$i", 0)
+    /** С какой SIM звонить: -1 — как в телефоне, иначе номер слота с нуля. */
+    fun sim(ctx: Context, i: Int): Int = sp(ctx).getInt("sim_$i", -1)
+    fun setSim(ctx: Context, i: Int, v: Int) = sp(ctx).edit().putInt("sim_$i", v).apply()
+
     fun mode(ctx: Context): Int = sp(ctx).getInt("mode", MODE_TEXT)
     /** Сколько кнопок показывать на виджете (1–6, по умолчанию 3). */
     fun count(ctx: Context): Int = sp(ctx).getInt("count", 3).coerceIn(1, MAX)

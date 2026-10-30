@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.telecom.TelecomManager
 import android.widget.Toast
 
 /** Получает номер шлагбаума и сразу звонит, без открытия интерфейса. */
@@ -25,12 +26,35 @@ class CallActivity : Activity() {
                 Toast.makeText(this, "Разрешите звонки в приложении «Шлагбаум»", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, MainActivity::class.java))
             }
-            else -> {
-                Toast.makeText(this, "Открываю: ${Prefs.name(this, i)}", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(Intent.ACTION_CALL, Uri.parse("tel:" + Uri.encode(phone))))
-            }
+            else -> call(i, phone)
         }
         finish()
+    }
+
+    @android.annotation.SuppressLint("MissingPermission")
+    private fun call(i: Int, phone: String) {
+        val uri = Uri.parse("tel:" + Uri.encode(phone))
+        val slot = Prefs.sim(this, i)
+        val name = Prefs.name(this, i)
+
+        if (slot >= 0) {
+            val handle = Sim.handleFor(this, slot)
+            if (handle != null) {
+                try {
+                    val extras = Bundle().apply {
+                        putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, handle)
+                    }
+                    Toast.makeText(this, "Открываю: $name (SIM ${slot + 1})", Toast.LENGTH_SHORT).show()
+                    getSystemService(TelecomManager::class.java).placeCall(uri, extras)
+                    return
+                } catch (e: SecurityException) { /* ниже — обычный звонок */ }
+            } else {
+                Toast.makeText(this, "SIM ${slot + 1} не найдена — звоню как в телефоне",
+                    Toast.LENGTH_LONG).show()
+            }
+        }
+        if (slot < 0) Toast.makeText(this, "Открываю: $name", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(Intent.ACTION_CALL, uri))
     }
 
     companion object { const val EXTRA_INDEX = "index" }
