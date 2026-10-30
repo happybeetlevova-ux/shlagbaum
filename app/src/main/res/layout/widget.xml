@@ -9,10 +9,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon1" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label1" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label1" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label1m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
     <FrameLayout android:id="@+id/btn2" android:layout_width="0dp" android:layout_height="match_parent"
@@ -21,10 +24,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon2" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label2" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label2" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label2m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
     <FrameLayout android:id="@+id/btn3" android:layout_width="0dp" android:layout_height="match_parent"
@@ -33,10 +39,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon3" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label3" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label3" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label3m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
     <FrameLayout android:id="@+id/btn4" android:layout_width="0dp" android:layout_height="match_parent"
@@ -45,10 +54,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon4" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label4" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label4" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label4m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
     <FrameLayout android:id="@+id/btn5" android:layout_width="0dp" android:layout_height="match_parent"
@@ -57,10 +69,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon5" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label5" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label5" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label5m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
     <FrameLayout android:id="@+id/btn6" android:layout_width="0dp" android:layout_height="match_parent"
@@ -69,10 +84,13 @@
             android:layout_height="match_parent" android:scaleType="fitXY"
             android:src="@drawable/btn_shape" android:importantForAccessibility="no" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-            android:orientation="vertical" android:gravity="center" android:padding="4dp">
+            android:orientation="vertical" android:gravity="center" android:padding="6dp">
             <ImageView android:id="@+id/icon6" android:layout_width="28dp"
                 android:layout_height="28dp" android:importantForAccessibility="no" />
-            <TextView android:id="@+id/label6" style="@style/WidgetLabel" android:layout_marginTop="2dp" />
+            <TextView android:id="@+id/label6" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="1" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
+            <TextView android:id="@+id/label6m" style="@style/WidgetLabel" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="2dp"
+                android:maxLines="2" android:visibility="gone" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="9sp" android:autoSizeMaxTextSize="16sp" android:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>

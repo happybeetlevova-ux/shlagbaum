@@ -23,6 +23,7 @@ open class BarrierWidget : AppWidgetProvider() {
         private val bg = intArrayOf(R.id.bg1, R.id.bg2, R.id.bg3, R.id.bg4, R.id.bg5, R.id.bg6)
         private val icon = intArrayOf(R.id.icon1, R.id.icon2, R.id.icon3, R.id.icon4, R.id.icon5, R.id.icon6)
         private val label = intArrayOf(R.id.label1, R.id.label2, R.id.label3, R.id.label4, R.id.label5, R.id.label6)
+        private val labelMulti = intArrayOf(R.id.label1m, R.id.label2m, R.id.label3m, R.id.label4m, R.id.label5m, R.id.label6m)
 
         fun buildViews(ctx: Context, layoutRes: Int): RemoteViews {
             val v = RemoteViews(ctx.packageName, layoutRes)
@@ -41,8 +42,14 @@ open class BarrierWidget : AppWidgetProvider() {
 
                 if (showIcon) v.setImageViewResource(icon[i], Prefs.ICONS[ic])
                 v.setViewVisibility(icon[i], if (showIcon) View.VISIBLE else View.GONE)
-                v.setTextViewText(label[i], Prefs.name(ctx, i))
-                v.setViewVisibility(label[i], if (showText) View.VISIBLE else View.GONE)
+                // Одно слово — в одну строку (шрифт уменьшится, но слово не разорвётся),
+                // несколько слов — до двух строк
+                val name = Prefs.name(ctx, i)
+                val multi = name.trim().contains(' ')
+                v.setTextViewText(label[i], name)
+                v.setTextViewText(labelMulti[i], name)
+                v.setViewVisibility(label[i], if (showText && !multi) View.VISIBLE else View.GONE)
+                v.setViewVisibility(labelMulti[i], if (showText && multi) View.VISIBLE else View.GONE)
                 v.setContentDescription(btn[i], Prefs.name(ctx, i))
 
                 val intent = Intent(ctx, CallActivity::class.java)
