@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.view.WindowInsets
@@ -29,6 +30,7 @@ class MainActivity : Activity() {
 
     private val GREEN = 0xFF2E7D32.toInt()
     private val REQ_SIM = 2
+    companion object { const val EXTRA_FROM_PANEL = "from_panel" }
 
     private val colorViews = Array(Prefs.MAX) { mutableListOf<View>() }
     private val iconViews = Array(Prefs.MAX) { mutableListOf<View>() }
@@ -40,6 +42,12 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // По значку приложения сразу открываем крупные кнопки, если так настроено
+        if (Prefs.startPanel(this) && !intent.getBooleanExtra(EXTRA_FROM_PANEL, false)) {
+            startActivity(Intent(this, PanelActivity::class.java))
+            finish(); return
+        }
 
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -73,6 +81,7 @@ class MainActivity : Activity() {
             setOnClickListener { pin(BarrierWidgetColumn::class.java) }
         })
         root.addView(hint("Изменения сохраняются автоматически и сразу появляются на виджете."))
+        root.addView(carBlock())
 
         // Зелёная шапка + прокручиваемые настройки. Отступы под системные панели
         // считаем сами: на Android 15 приложение рисуется на весь экран.
@@ -91,7 +100,8 @@ class MainActivity : Activity() {
         setContentView(screen)
         setupSystemBars(screen, header, scroll)
 
-        if (checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+        if (CallApps.hasTelephony(this) &&
+            checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.CALL_PHONE), 1)
         }
     }
@@ -120,8 +130,10 @@ class MainActivity : Activity() {
             addTextChangedListener(watcher { Prefs.setPhone(this@MainActivity, i, it.trim()) })
         })
 
-        box.addView(label("Звонить с SIM-карты"))
-        box.addView(simChooser(i))
+        if (CallApps.hasTelephony(this)) {
+            box.addView(label("Звонить с SIM-карты"))
+            box.addView(simChooser(i))
+        }
 
         box.addView(label("Цвет"))
         val colors = LinearLayout(this)
@@ -191,6 +203,44 @@ class MainActivity : Activity() {
     private fun changed() {
         for (i in 0 until Prefs.MAX) markIcons(i)
         BarrierWidget.refreshAll(this)
+    }
+
+    /** Настройки для магнитолы: экран с кнопками и приложение для звонков. */
+    private fun carBlock(): View {
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        box.addView(header("Магнитола и экран с кнопками"), LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            .apply { topMargin = dp(28) })
+
+        box.addView(Switch(this).apply {
+            text = "При запуске открывать крупные кнопки"; textSize = 15f
+            isChecked = Prefs.startPanel(this@MainActivity)
+            setOnCheckedChangeListener { _, on -> Prefs.setStartPanel(this@MainActivity, on) }
+        }, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply { topMargin = dp(8) })
+        box.addView(Button(this).apply {
+            text = "Открыть экран с кнопками"
+            setOnClickListener { startActivity(Intent(this@MainActivity, PanelActivity::class.java)) }
+        })
+
+        box.addView(label("Через какое приложение звонить"))
+        val apps = CallApps.list(this)
+        val saved = Prefs.callApp(this)
+        val options = mutableListOf("" to "Автоматически")
+        apps.forEach { options += it.pkg to "${it.label}  (${it.pkg})" }
+        if (saved.isNotEmpty() && apps.none { it.pkg == saved }) options += saved to "$saved — не найдено"
+        val group = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
+        options.forEachIndexed { k, (pkg, t) ->
+            group.addView(RadioButton(this).apply {
+                id = 5000 + k; text = t; textSize = 14f; isChecked = pkg == saved
+            })
+        }
+        group.setOnCheckedChangeListener { _, id -> Prefs.setCallApp(this, options[id - 5000].first) }
+        box.addView(group)
+        box.addView(hint(if (CallApps.hasTelephony(this))
+            "На телефоне оставьте «Автоматически». На магнитоле выберите её Bluetooth-«Телефон»."
+        else
+            "Это устройство звонит через телефон по Bluetooth. Выберите приложение «Телефон» / «Bluetooth» " +
+                "магнитолы. Если номер только открывается, нажмите в нём кнопку вызова."))
+        return box
     }
 
     /** Выбор SIM-карты для кнопки. */

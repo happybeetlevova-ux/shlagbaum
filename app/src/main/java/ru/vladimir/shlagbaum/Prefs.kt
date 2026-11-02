@@ -51,6 +51,15 @@ object Prefs {
     fun sim(ctx: Context, i: Int): Int = sp(ctx).getInt("sim_$i", -1)
     fun setSim(ctx: Context, i: Int, v: Int) = sp(ctx).edit().putInt("sim_$i", v).apply()
 
+    /** Приложение для звонков ("" — автоматически). Нужно для магнитол. */
+    fun callApp(ctx: Context): String = sp(ctx).getString("call_app", "") ?: ""
+    fun setCallApp(ctx: Context, v: String) = sp(ctx).edit().putString("call_app", v).apply()
+
+    /** Открывать экран с кнопками при запуске. На магнитоле — по умолчанию да. */
+    fun startPanel(ctx: Context): Boolean =
+        sp(ctx).getBoolean("start_panel", !CallApps.hasTelephony(ctx))
+    fun setStartPanel(ctx: Context, v: Boolean) = sp(ctx).edit().putBoolean("start_panel", v).apply()
+
     fun mode(ctx: Context): Int = sp(ctx).getInt("mode", MODE_TEXT)
     /** Сколько кнопок показывать на виджете (1–6, по умолчанию 3). */
     fun count(ctx: Context): Int = sp(ctx).getInt("count", 3).coerceIn(1, MAX)

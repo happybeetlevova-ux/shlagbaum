@@ -17,11 +17,14 @@ class CallActivity : Activity() {
         val i = intent.getIntExtra(EXTRA_INDEX, -1)
         val phone = if (i in 0 until Prefs.MAX) Prefs.phone(this, i) else ""
 
+        val callApp = Prefs.callApp(this)
         when {
             phone.isBlank() -> {
                 Toast.makeText(this, "Номер не задан — откройте настройки", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, MainActivity::class.java))
             }
+            // Магнитола или выбрано отдельное приложение для звонков (Bluetooth-«Телефон»)
+            callApp.isNotEmpty() || !CallApps.hasTelephony(this) -> viaApp(i, phone, callApp)
             checkSelfPermission(Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED -> {
                 Toast.makeText(this, "Разрешите звонки в приложении «Шлагбаум»", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, MainActivity::class.java))
@@ -55,6 +58,19 @@ class CallActivity : Activity() {
         }
         if (slot < 0) Toast.makeText(this, "Открываю: $name", Toast.LENGTH_SHORT).show()
         startActivity(Intent(Intent.ACTION_CALL, uri))
+    }
+
+    private fun viaApp(i: Int, phone: String, pkg: String) {
+        val uri = Uri.parse("tel:" + Uri.encode(phone))
+        val ok = (pkg.isNotEmpty() && CallApps.launch(this, pkg, uri)) || CallApps.launch(this, null, uri)
+        if (ok) {
+            Toast.makeText(this, "Открываю: ${Prefs.name(this, i)}", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this,
+                "Не найдено приложение для звонков. Подключите телефон по Bluetooth " +
+                    "и выберите приложение в настройках «Шлагбаума».", Toast.LENGTH_LONG).show()
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 
     companion object { const val EXTRA_INDEX = "index" }
